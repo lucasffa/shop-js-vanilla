@@ -15,13 +15,15 @@
 <body>
     <header>
         <img src="img/logo.svg" alt="Logo" class="logo">
+        <a href="#" id="dropdown-menu">Categories</a>
         <nav>
             <ul>
-                <li><a href="#" class="category" data-category="all">All</a></li>
                 <!-- Populating here, such that each category has its own dynamic-generated mapping filtering function -->
             </ul>
-            <a href="#" id="new-item">New Item</a>
         </nav>
+        
+        <a href="#" id="new-item">New Item</a>
+
     </header>
 
 
@@ -59,6 +61,7 @@
         </div>
     </footer>
 
+    <script type="module" src="js/db.js"></script>
     <script type="module" src="js/scripts.js"></script>
     <script type="module" src="js/events.js"></script>
     <script type="module" src="js/dom.js"></script>

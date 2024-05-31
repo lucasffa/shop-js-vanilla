@@ -2,12 +2,15 @@
 
 import { showNewProductForm, loadProducts, loadCategories } from './scripts.js';
 import { newProductButton } from './dom.js';
+import { getProducts } from './api.js';
 
 newProductButton?.addEventListener('click', showNewProductForm);
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     loadCategories();
-    loadProducts();
+    console.log('Fetching initial products to store in IndexedDB');
+    await getProducts('all');
+    await loadProducts();
     setupBannerActions();
 });
 
