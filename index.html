@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jockey+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    
+</head>
+
+<body>
+    <header>
+        <img src="img/logo.svg" alt="Logo" class="logo">
+        <nav>
+            <ul>
+                <li><a href="#" class="category" data-category="all">All</a></li>
+                <!-- Populating here, such that each category has its own dynamic-generated mapping filtering function -->
+            </ul>
+            <a href="#" id="new-item">New Item</a>
+        </nav>
+    </header>
+
+
+    <main>
+        
+        <section class="banner">
+            <img src="img/banner.svg" alt="Banner" id="banner-image">
+            <div class="kebab-menu" aria-label="Kebab Menu">
+                <img src="img/kebab.svg" alt="Kebab Menu">
+                <div class="kebab-options">
+                    <button aria-label="Edit" class="edit"><img src="img/edit.svg" alt="Edit"></button>
+                    <button aria-label="Delete" class="delete"><img src="img/delete.svg" alt="Delete"></button>
+                    <button aria-label="Close Kebab Menu" class="close-kebab"><img src="img/reload.svg"
+                            alt="Close"></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="catalog">
+            <!-- Items will be populated dynamically -->
+        </section>
+
+        <div id="pagination">
+            <!-- Pagination will be populated dynamically -->
+        </div>
+    </main>
+
+    <footer>
+        <img src="img/logo-white.svg" alt="Logo" class="footer-logo">
+        <div class="social-icons">
+            <img src="img/instagram.svg" alt="Instagram">
+            <img src="img/facebook.svg" alt="Facebook">
+            <img src="img/tiktok.svg" alt="Tiktok">
+            <img src="img/youtube.svg" alt="Youtube">
+        </div>
+    </footer>
+
+    <script type="module" src="js/scripts.js"></script>
+    <script type="module" src="js/events.js"></script>
+    <script type="module" src="js/dom.js"></script>
+    <script type="module" src="js/pagination.js"></script>
+</body>
+
+</html>

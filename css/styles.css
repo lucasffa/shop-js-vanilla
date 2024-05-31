@@ -1,0 +1,379 @@
+/* Reset CSS */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* Root Variables */
+:root {
+    --primary-color-1000: #FFE500;
+    --secondary-color-1000: #181A2D;
+    --tertiary-color-1000: #828282;
+    --white-color-1000: white;
+    --black-color-1000: black;
+    --text-color: #FFFFFF;
+    --text-color-dark: #000000;
+}
+
+/* General Styles */
+body {
+    font-family: 'Jockey One', sans-serif;
+    background-color: var(--secondary-color-1000);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--primary-color-1000);
+    padding: 1rem;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    justify-content: center;
+}
+
+header .logo {
+    width: 100px;
+}
+
+header nav {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+}
+
+nav ul {
+    display: flex;
+    gap: 2rem;
+}
+
+nav ul li a {
+    color: var(--secondary-color-1000);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#new-item {
+    background-color: var(--secondary-color-1000);
+    color: var(--primary-color-1000);
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    height: 5%;
+    width: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.banner {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    padding-bottom: 1vh;
+}
+
+#banner-image {
+    width: 100%;
+    height: 100%;
+}
+
+.kebab-menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.kebab-options {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--secondary-color-1000);
+    padding: 0.5rem;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.kebab-menu:hover .kebab-options,
+.kebab-options:hover {
+    display: block;
+}
+
+.kebab-options button {
+    background: none;
+    border: none;
+    margin: 0.2rem 0;
+}
+
+.kebab-options button img {
+    width: 20px;
+    height: 20px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+#catalog {
+    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+
+.catalog-item {
+    background-color: var(--white-color-1000);
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+}
+
+.catalog-item .inferior {
+    background-color: var(--tertiary-color-1000);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    padding-bottom: 10%;
+}
+
+.catalog-item img {
+    border-radius: 5px;
+    max-width: 200px;
+    max-height: 200px;
+    margin-bottom: 60%;
+}
+
+.catalog-item p {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    text-align: justify;
+}
+
+.catalog-item p.label {
+    color: var(--white-color-1000);
+}
+
+.catalog-item p.price {
+    color: var(--secondary-color-1000);
+}
+
+
+.catalog-item p+p {
+    margin-top: 0rem;
+}
+
+.item-kebab-options {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--secondary-color-1000);
+    padding: 0.5rem;
+    border-radius: 5px;
+    z-index: 1000;
+    max-height: 8%;
+}
+
+.item-kebab-options button {
+    background: none;
+    border: none;
+    margin: 0.2rem 0;
+}
+
+.item-kebab-options button img {
+    width: 20px;
+    height: 20px;
+}
+
+.item-kebab-menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.item-kebab-menu img {
+    width: 20px;
+    height: 20px;
+}
+
+.item-kebab-menu:hover+.item-kebab-options,
+.item-kebab-options:hover {
+    display: block;
+}
+
+#pagination {
+    font-family: 'Jockey One', sans-serif;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+#pagination button {
+    background-color: var(--primary-color-1000);
+    color: var(--secondary-color-1000);
+    border: none;
+    margin: 0 0.2rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#pagination button.disabled {
+    background-color: var(--tertiary-color-1000);
+    cursor: not-allowed;
+}
+
+footer {
+    background-color: var(--secondary-color-1000);
+    padding: 2rem;
+    text-align: center;
+}
+
+.footer-logo {
+    width: 100px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-icons img {
+    width: 30px;
+    height: 30px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    #catalog {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    #catalog {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    #catalog {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.hidden {
+    display: none;
+}
+
+/* Estilo adicional para o formulário de novo produto */
+#form-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--text-color-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#new-product-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+}
+
+#close-form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#form-error {
+    color: red;
+}
+
+#form-error.hidden {
+    display: none;
+}
+
+.error {
+    color: red;
+}
