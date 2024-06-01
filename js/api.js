@@ -1,20 +1,37 @@
+/*
+    Developed by Lucas de Almeida. 
+        - GitHub: https://github.com/lucasffa
+        - LinkedIn: https://www.linkedin.com/in/lucasffa/
+
+    Concept-designed by Miguel Rivero.
+        - LinkedIn: https://www.linkedin.com/in/miguel-rivero-434831145/
+        - GitHub: https://github.com/miguelojopi
+        - Figma:
+*/
+
 // api.js
 
-import { saveProduct, getProduct, clearExpiredProducts } from './db.js';
+import { saveProduct, getProduct, clearExpiredProducts, saveCategory, getCategoriesFromDB, clearExpiredCategories } from './db.js';
 
 const BASEURL = 'https://fakestoreapi.com';
 
 export async function getCategories() {
-    try {
-        const response = await fetch(`${BASEURL}/products/categories`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch categories');
+    await clearExpiredCategories();
+    let categories = await getCategoriesFromDB();
+    if (!categories) {
+        try {
+            const response = await fetch(`${BASEURL}/products/categories`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch categories');
+            }
+            categories = await response.json();
+            await saveCategory({ id: 'allCategories', categories, timestamp: Date.now() });
+        } catch (error) {
+            console.error(error);
+            return [];
         }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        return [];
     }
+    return categories.categories;
 }
 
 export async function getProducts(category) {

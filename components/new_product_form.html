@@ -1,0 +1,40 @@
+<!--
+    Developed by Lucas de Almeida. 
+        - GitHub: https://github.com/lucasffa
+        - LinkedIn: https://www.linkedin.com/in/lucasffa/
+
+    Concept-designed by Miguel Rivero.
+        - LinkedIn: https://www.linkedin.com/in/miguel-rivero-434831145/
+        - GitHub: https://github.com/miguelojopi
+        - Figma:
+-->
+
+<!--
+    /components/new_product_form.html
+-->
+
+<form id="new-product-form">
+    <h2>New Product</h2>
+    <button type="button" id="close-form" aria-label="Close Form"><img src="img/close.svg" alt="Kebab Menu"></button>
+    <div>
+        <label for="product-name">Product Name</label>
+        <input type="text" id="product-name" name="name" placeholder="Product Name" required>
+    </div>
+    <div>
+        <label for="product-description">Product Description</label>
+        <textarea id="product-description" name="description" placeholder="Product Description" required></textarea>
+    </div>
+    <div>
+        <label for="product-price">Price:</label>
+        <input type="number" id="product-price" name="price" placeholder="Price" required>
+    </div>
+    <div>
+        <label for="product-category">Category</label>
+        <select id="product-category" name="category" required>
+            <option value="" selected disabled hidden>CATEGORY</option>
+            <!-- Options will be populated dynamically here -->
+        </select>
+    </div>
+    <button type="submit" id="submit-button">Register</button>
+    <p id="form-error" class="hidden">Try again.</p>
+</form>

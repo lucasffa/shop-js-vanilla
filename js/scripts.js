@@ -1,4 +1,15 @@
-// scripts.js
+/*
+    Developed by Lucas de Almeida. 
+        - GitHub: https://github.com/lucasffa
+        - LinkedIn: https://www.linkedin.com/in/lucasffa/
+
+    Concept-designed by Miguel Rivero.
+        - LinkedIn: https://www.linkedin.com/in/miguel-rivero-434831145/
+        - GitHub: https://github.com/miguelojopi
+        - Figma:
+*/
+
+// /js/scripts.js
 
 import { renderForm, resetFormState, renderProducts, renderPagination } from './dom.js';
 import { calculateTotalPages } from './pagination.js';
@@ -18,6 +29,7 @@ export function delay(ms) {
 
 export async function loadCategories() {
     categories = await getCategories();
+    console.log('Estas são as categories carregadas -- categories: ', categories)
     const nav = document.querySelector('nav ul');
     const allLink = document.createElement('li');
     const allAnchor = document.createElement('a');
@@ -65,8 +77,16 @@ export async function loadCategories() {
     const dropdownMenu = document.getElementById('dropdown-menu');
     dropdownMenu.addEventListener('click', (event) => {
         event.preventDefault();
+        event.stopPropagation();
         const navUl = document.querySelector('nav ul');
         navUl.classList.toggle('dropdown');
+    });
+
+    document.addEventListener('click', (event) => {
+        const navUl = document.querySelector('nav ul');
+        if (navUl.classList.contains('dropdown') && !dropdownMenu.contains(event.target) && !navUl.contains(event.target)) {
+            navUl.classList.remove('dropdown');
+        }
     });
 
     setActiveCategory(allAnchor);

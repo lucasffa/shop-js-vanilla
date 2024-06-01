@@ -1,3 +1,17 @@
+/*
+    Developed by Lucas de Almeida. 
+        - GitHub: https://github.com/lucasffa
+        - LinkedIn: https://www.linkedin.com/in/lucasffa/
+
+    Concept-designed by Miguel Rivero.
+        - LinkedIn: https://www.linkedin.com/in/miguel-rivero-434831145/
+        - GitHub: https://github.com/miguelojopi
+        - Figma:
+*/
+
+// /js/dom.js
+
+import { getCategories } from "./api.js";
 
 export const newProductButton = document.getElementById('new-item');
 export const catalogSection = document.getElementById('catalog');
@@ -122,47 +136,50 @@ export async function renderPagination(totalPages, currentPage, loadProducts) {
 }
 
 
-export function renderForm(handleFormSubmit) {
+
+export async function renderForm(handleFormSubmit) {
     const formSection = document.createElement('section');
     formSection.id = 'form-section';
-    formSection.innerHTML = `
-        <form id="new-product-form">
-            <h2>New Product</h2>
-            <button type="button" id="close-form" aria-label="Close Form">X</button>
-            <div>
-                <label for="product-image">Photo</label>
-                <input type="file" id="product-image" name="image" required>
-            </div>
-            <div>
-                <label for="product-name">Product Name</label>
-                <input type="text" id="product-name" name="name" required>
-            </div>
-            <div>
-                <label for="product-description">Product Description</label>
-                <textarea id="product-description" name="description" required></textarea>
-            </div>
-            <div>
-                <label for="product-price">Price</label>
-                <input type="number" id="product-price" name="price" required>
-            </div>
-            <div>
-                <label for="product-category">Category</label>
-                <select id="product-category" name="category" required>
-                    <!-- Options will be populated dynamically here -->
-                </select>
-            </div>
-            <button type="submit" id="submit-button">Register</button>
-            <p id="form-error" class="hidden">Try again.</p>
-        </form>
-    `;
+
+    const response = await fetch('/components/new_product_form.html');
+    const htmlContent = await response.text();
+
+    formSection.innerHTML = htmlContent;
 
     document.body.appendChild(formSection);
 
+    function handleClickOutside(event) {
+        const newProductForm = document.getElementById('new-product-form');
+        try {
+            if (!newProductForm.contains(event.target)) {
+                document.body.removeChild(formSection);
+                document.removeEventListener('click', handleClickOutside);
+            }
+
+        } catch(e) {
+
+        }
+    }
+
+    document.addEventListener('click', handleClickOutside);
+
     const closeFormButton = document.getElementById('close-form');
-    closeFormButton.addEventListener('click', () => {
+    closeFormButton.addEventListener('click', (event) => {
+        event.stopPropagation();
         document.body.removeChild(formSection);
+        document.removeEventListener('click', handleClickOutside);
     });
 
     const newProductForm = document.getElementById('new-product-form');
     newProductForm.addEventListener('submit', handleFormSubmit);
+
+    const categorySelect = document.getElementById('product-category');
+    const categories = await getCategories();
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        categorySelect.appendChild(option);
+    });
 }
