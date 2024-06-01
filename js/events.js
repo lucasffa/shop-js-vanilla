@@ -21,8 +21,6 @@ newProductButton?.addEventListener('click', (event) => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-
-
     // Pre-fetching
     console.log('Fetching initial categories to store in IndexedDB');
     await getCategories('all');

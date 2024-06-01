@@ -64,7 +64,12 @@ table {
     border-spacing: 0;
 }
 
-button, label, textarea, input, option, selection {
+button,
+label,
+textarea,
+input,
+option,
+selection {
     font-family: 'Jockey One', sans-serif;
 }
 
@@ -158,13 +163,14 @@ nav ul li a.active {
     align-items: center;
     justify-content: center;
     text-align: center;
-    transition: color 0.3s, background-color 0.3s;
+    transition: color 0.3s, background-color 0.3s, box-shadow 0.5s;
 }
 
 
 #new-item:hover {
     background-color: var(--text-color);
     color: var(--secondary-color-1000);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
 }
 
 .banner {
@@ -183,6 +189,15 @@ nav ul li a.active {
     position: absolute;
     top: 10px;
     right: 10px;
+}
+
+
+.kebab-menu img {
+    transition: filter 0.5s;
+}
+
+.kebab-menu img:hover {
+    filter: invert(100%) brightness(200%) contrast(100%);
 }
 
 .kebab-options {
@@ -210,6 +225,10 @@ nav ul li a.active {
 .kebab-options button img {
     width: 20px;
     height: 20px;
+}
+
+.kebab-options button img:hover {
+    filter: invert(77%) sepia(85%) saturate(652%) hue-rotate(3deg) brightness(290%) contrast(103%);
 }
 
 main {
@@ -297,7 +316,7 @@ main {
     transform-origin: top right;
 }
 
-.catalog-item img:hover {
+.catalog-item img.catalog-image:hover {
     transform: rotate(2deg) perspective(1000px) rotateX(3deg) rotateY(3deg);
 }
 
@@ -305,24 +324,31 @@ main {
 .item-kebab-options {
     display: none;
     position: absolute;
-    top: 10px;
+    top: 30px;
     right: 10px;
     background-color: var(--secondary-color-1000);
     padding: 0.5rem;
     border-radius: 5px;
     z-index: 1000;
     max-height: 8%;
+    transform: none;
 }
 
 .item-kebab-options button {
     background: none;
     border: none;
     margin: 0.2rem 0;
+    transform: none;
 }
 
 .item-kebab-options button img {
     width: 20px;
     height: 20px;
+    transform: none;
+}
+
+.item-kebab-options button img:hover {
+    filter: invert(77%) sepia(85%) saturate(652%) hue-rotate(3deg) brightness(290%) contrast(103%);
 }
 
 .item-kebab-menu {
@@ -332,13 +358,22 @@ main {
     cursor: pointer;
 }
 
+
 .item-kebab-menu img {
     width: 20px;
     height: 20px;
+    transition: filter 1s;
+}
+
+
+.item-kebab-menu img:hover {
+    transform: none;
+    filter: invert(50%) brightness(100%) contrast(50%);
 }
 
 .item-kebab-menu:hover+.item-kebab-options,
 .item-kebab-options:hover {
+    transform: none;
     display: block;
 }
 
@@ -484,6 +519,22 @@ footer {
     align-items: end;
 }
 
+.form-group {
+    padding-right: 3rem;
+}
+
+
+.form-group label {
+    transition: font-size 0.3s ease-in-out;
+}
+
+.form-group:hover label,
+.form-group:focus-within label {
+    font-size: large;
+    
+}
+
+
 #new-product-form textarea {
     resize: none;
 }
@@ -505,7 +556,7 @@ footer {
     font-family: 'Jockey One', sans-serif;
 }
 
-#new-product-form #submit-button{
+#new-product-form #submit-button {
     width: 6rem;
     padding: 0.5rem;
     border: 1px solid transparent;
@@ -515,16 +566,42 @@ footer {
     bottom: 10px;
     right: 10px;
     font-size: large;
+    color: var(--secondary-color-1000);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.0);
+    transition: box-shadow 0.7s, background-color 0.5s ease-in-out, color 0.3s;
+}
+
+#new-product-form #submit-button:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.8);
+    background-color: var(--secondary-color-1000);
+    color: var(--white-color-1000)
 }
 
 #close-form {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: none;
+    background: transparent;
     border: none;
     font-size: 20px;
     cursor: pointer;
+    transition: filter 0.3s;
+}
+
+#close-form img{
+    background-color: transparent;
+    border-radius: 80px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.5s;
+}
+
+#close-form img:hover {
+    border-radius: 80px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+#close-form:hover {
+    filter: invert(77%) sepia(85%) saturate(652%) hue-rotate(3deg) brightness(290%) contrast(103%);
 }
 
 #form-error {
@@ -554,6 +631,12 @@ footer {
     text-align: center;
     cursor: pointer;
     display: none;
+}
+
+#dropdown-menu:hover {
+    background-color: var(--white-color-1000);
+    color: var(--secondary-color-1000);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
 }
 
 @media (max-width: 700px) {
@@ -606,8 +689,20 @@ footer {
         gap: 1rem;
         min-width: 80%;
     }
-    #new-product-form #submit-button{
+
+    #new-product-form #submit-button {
         bottom: -30px;
         right: 5px;
     }
+
+    #new-product-form {
+        position: fixed;
+        top: 5%;
+        left: 5%;
+        width: 80%;
+        background-color: white;
+        z-index: 1000;
+    }
+
 }
+

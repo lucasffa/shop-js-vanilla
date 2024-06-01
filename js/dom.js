@@ -34,6 +34,7 @@ export function renderProducts(products) {
         item.className = 'catalog-item';
 
         const img = document.createElement('img');
+        img.className = 'catalog-image';
         img.src = product.image;
         img.alt = product.title;
 
@@ -117,7 +118,7 @@ export async function renderPagination(totalPages, currentPage, loadProducts) {
 
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement('button');
-        pageButton.textContent = i;
+        pageButton.textContent = i.toString().padStart(2, '0');
         pageButton.className = currentPage === i ? 'active' : '';
         pageButton.addEventListener('click', () => {
             loadProducts(i);
@@ -138,6 +139,10 @@ export async function renderPagination(totalPages, currentPage, loadProducts) {
 
 
 export async function renderForm(handleFormSubmit) {
+    // Pre-fetching
+    console.log('Fetching initial categories to store in IndexedDB');
+    await getCategories('all');
+
     const formSection = document.createElement('section');
     formSection.id = 'form-section';
 
@@ -148,8 +153,9 @@ export async function renderForm(handleFormSubmit) {
 
     document.body.appendChild(formSection);
 
+    const newProductForm = document.getElementById('new-product-form');
+    
     function handleClickOutside(event) {
-        const newProductForm = document.getElementById('new-product-form');
         try {
             if (!newProductForm.contains(event.target)) {
                 document.body.removeChild(formSection);
@@ -170,7 +176,6 @@ export async function renderForm(handleFormSubmit) {
         document.removeEventListener('click', handleClickOutside);
     });
 
-    const newProductForm = document.getElementById('new-product-form');
     newProductForm.addEventListener('submit', handleFormSubmit);
 
     const categorySelect = document.getElementById('product-category');
@@ -182,4 +187,22 @@ export async function renderForm(handleFormSubmit) {
         option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
         categorySelect.appendChild(option);
     });
+}
+
+
+export async function disableTouchFor(x) {
+    const overlay = document.createElement('div');
+    overlay.id = 'touch-block-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.zIndex = '9999';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+    document.body.appendChild(overlay);
+
+    setTimeout(() => {
+        document.body.removeChild(overlay);
+    }, x);
 }
