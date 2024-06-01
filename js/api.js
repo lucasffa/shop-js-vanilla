@@ -11,7 +11,8 @@
 
 // api.js
 
-import { saveProduct, getProduct, clearExpiredProducts, saveCategory, getCategoriesFromDB, clearExpiredCategories } from './db.js';
+import { saveProduct, getProduct, clearExpiredProducts, saveCategory, getCategoriesFromDB, clearExpiredCategories, getAllProducts } from './db.js';
+import { ProductDTO } from './dto.js';
 
 const BASEURL = 'https://fakestoreapi.com';
 
@@ -35,26 +36,29 @@ export async function getCategories() {
 }
 
 export async function getProducts(category) {
+    console.log('Executando db.clearExpiredProducts em api.getProducts');
     await clearExpiredProducts();
-    let products = await getProduct('allProducts');
-    if (!products) {
+    console.log('Executando db.getAllProducts em api.getProducts');
+    let products = await getAllProducts();
+    if (!products.length) {
         try {
-            console.log('Fetching products from API')
+            console.log('Fetching products from API');
             const response = await fetch(`${BASEURL}/products?limit=20`);
-
             if (!response.ok) {
                 throw new Error('Failed to fetch products');
             }
-            products = await response.json();
-            await saveProduct({ id: 'allProducts', products, timestamp: Date.now() });
+            const fetchedProducts = await response.json();
+            for (const product of fetchedProducts) {
+                await saveProduct({ id: product.id, ...product, timestamp: Date.now() });
+            }
+            products = fetchedProducts;
         } catch (error) {
             console.error(error);
             return [];
         }
     }
-    return category === 'all' ? products.products : products.products.filter(p => p.category === category);
+    return category === 'all' ? products : products.filter(p => p.category === category);
 }
-
 export async function getProductById(id) {
     let product = await getProduct(id);
     if (!product) {
@@ -73,20 +77,46 @@ export async function getProductById(id) {
     return product;
 }
 
-export async function addProduct(formData) {
+
+export async function addProduct(productDTO) {
+    console.log('productDTO: ', productDTO);
     try {
+        const formData = productDTO.toFormData();
         const response = await fetch(`${BASEURL}/products`, {
             method: 'POST',
             body: formData,
         });
-        if (!response.ok) {
-            throw new Error('Failed to add product');
+
+        const responseBodyText = await response.text();
+        console.log('Response Body as Text:', responseBodyText);
+
+        try {
+            const responseBodyJson = JSON.parse(responseBodyText);
+            console.log('Response Body as JSON:', responseBodyJson);
+
+            if (!response.ok) {
+                throw new Error('Failed to add product');
+            }
+
+            const product = {
+                id: responseBodyJson.id,
+                title: productDTO.title,
+                description: productDTO.description,
+                price: productDTO.price,
+                category: productDTO.category,
+                image: responseBodyJson.image || productDTO.imageBase64,
+                timestamp: Date.now()
+            };
+
+            const saveProductLog = await saveProduct(product);
+            console.log('saveProductLog: ', saveProductLog)
+            return product;
+        } catch (jsonError) {
+            console.error('Failed to parse response body as JSON:', jsonError);
+            throw new Error('Failed to parse response body as JSON');
         }
-        const product = await response.json();
-        await saveProduct({ id: product.id, ...product, timestamp: Date.now() });
-        return product;
     } catch (error) {
-        console.error(error);
+        console.error('Error:', error);
         return { success: false };
     }
 }

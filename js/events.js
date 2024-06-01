@@ -11,13 +11,16 @@
 
 // /js/events.js
 
-import { showNewProductForm, loadProducts, loadCategories } from './scripts.js';
+import { showNewProductForm, loadProducts, loadCategories, delay } from './scripts.js';
 import { newProductButton } from './dom.js';
 import { getCategories, getProducts } from './api.js';
 
 newProductButton?.addEventListener('click', (event) => {
     event.stopPropagation();
-    showNewProductForm();
+    if(!newProductButton.classList.contains('disabled')){
+        showNewProductForm();
+    }
+    newProductButton.classList.add('disabled');
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -74,6 +77,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         img.src = canvas.toDataURL();
     }*/
 });
+
+
+
 
 function setupBannerActions() {
     const editBannerButton = document.getElementById('edit-banner');

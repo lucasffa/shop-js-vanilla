@@ -12,11 +12,11 @@
 // /js/db.js
 
 const DB_NAME = 'ProductCatalogDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 const STORE_NAME = 'products';
 const CATEGORY_STORE_NAME = 'categories';
-const TTL = 60 * 1000;
-const TTL_CATEGORIES = 10 * 1000;
+const TTL = 180 * 1000;
+const TTL_CATEGORIES = 60 * 1000;
 
 function openDB() {
     return new Promise((resolve, reject) => {
@@ -47,15 +47,24 @@ function openDB() {
 
 function getTransaction(storeName, mode) {
     return openDB().then((db) => {
-        return db.transaction(storeName, mode).objectStore(storeName);
+        const transaction = db.transaction(storeName, mode);
+        return transaction.objectStore(storeName);
     });
 }
 
 export async function saveProduct(product) {
-    const store = await getTransaction(STORE_NAME, 'readwrite');
-    product.timestamp = Date.now();
-    store.put(product);
+    try {
+        const store = await getTransaction(STORE_NAME, 'readwrite');
+        return await new Promise((resolve, reject) => {
+            const request = store.put(product);
+            request.onsuccess = () => resolve(request);
+            request.onerror = (event) => reject('IndexedDB error: ' + event.target.errorCode);
+        });
+    } catch (error) {
+        console.error('Error saving product:', error);
+    }
 }
+
 
 export async function getProduct(id) {
     const store = await getTransaction(STORE_NAME, 'readonly');
@@ -64,11 +73,22 @@ export async function getProduct(id) {
         request.onsuccess = () => {
             const product = request.result;
             if (product && (Date.now() - product.timestamp) < TTL) {
-                console.log(product)
                 resolve(product);
             } else {
                 resolve(null);
             }
+        };
+        request.onerror = () => reject(request.error);
+    });
+}
+
+export async function getAllProducts() {
+    const store = await getTransaction(STORE_NAME, 'readonly');
+    return new Promise((resolve, reject) => {
+        const request = store.getAll();
+        request.onsuccess = () => {
+            const products = request.result.filter(product => (Date.now() - product.timestamp) < TTL);
+            resolve(products);
         };
         request.onerror = () => reject(request.error);
     });
@@ -79,14 +99,15 @@ export async function deleteProduct(id) {
     store.delete(id);
 }
 
-export async function clearExpiredProducts() {
+export async function clearExpiredProducts(category) {
     const store = await getTransaction(STORE_NAME, 'readwrite');
     const request = store.openCursor();
     request.onsuccess = () => {
         const cursor = request.result;
         if (cursor) {
             const product = cursor.value;
-            if ((Date.now() - product.timestamp) >= TTL) {
+            if (category == 'prefetch' || ((Date.now() - product.timestamp) >= TTL)) {
+                console.log('Deleting this product: ', product)
                 store.delete(cursor.key);
             }
             cursor.continue();

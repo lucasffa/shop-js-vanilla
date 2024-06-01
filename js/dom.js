@@ -12,6 +12,7 @@
 // /js/dom.js
 
 import { getCategories } from "./api.js";
+import { initProductForm } from "./scripts.js";
 
 export const newProductButton = document.getElementById('new-item');
 export const catalogSection = document.getElementById('catalog');
@@ -137,8 +138,7 @@ export async function renderPagination(totalPages, currentPage, loadProducts) {
 }
 
 
-
-export async function renderForm(handleFormSubmit) {
+export async function renderForm() {
     // Pre-fetching
     console.log('Fetching initial categories to store in IndexedDB');
     await getCategories('all');
@@ -154,16 +154,16 @@ export async function renderForm(handleFormSubmit) {
     document.body.appendChild(formSection);
 
     const newProductForm = document.getElementById('new-product-form');
-    
+
     function handleClickOutside(event) {
         try {
             if (!newProductForm.contains(event.target)) {
                 document.body.removeChild(formSection);
+                newProductButton.classList.remove('disabled');
                 document.removeEventListener('click', handleClickOutside);
             }
-
-        } catch(e) {
-
+        } catch (e) {
+            // No handle error
         }
     }
 
@@ -173,10 +173,31 @@ export async function renderForm(handleFormSubmit) {
     closeFormButton.addEventListener('click', (event) => {
         event.stopPropagation();
         document.body.removeChild(formSection);
+        newProductButton.classList.remove('disabled');
         document.removeEventListener('click', handleClickOutside);
     });
 
-    newProductForm.addEventListener('submit', handleFormSubmit);
+    initProductForm();
+
+
+    document.getElementById('image-preview').addEventListener('click', function () {
+        document.getElementById('product-image').click();
+    });
+
+    document.getElementById('product-image').addEventListener('change', function (event) {
+        if (event.target.files && event.target.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var preview = document.getElementById('image-preview');
+                preview.style.backgroundImage = `url(${e.target.result})`;
+                //preview.querySelector('img').src = e.target.result;
+                //preview.querySelector('img').style.display = 'block';
+                //preview.querySelector('img').style.visibility = 'hidden';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    });
+
 
     const categorySelect = document.getElementById('product-category');
     const categories = await getCategories();

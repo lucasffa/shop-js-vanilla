@@ -11,9 +11,10 @@
 
 // /js/scripts.js
 
-import { renderForm, resetFormState, renderProducts, renderPagination } from './dom.js';
+import { renderForm, resetFormState, renderProducts, renderPagination, newProductButton } from './dom.js';
 import { calculateTotalPages } from './pagination.js';
 import { getCategories, getProducts, addProduct } from './api.js';
+import { ProductDTO } from './dto.js';
 
 let currentPage = 1;
 let totalProducts = 0;
@@ -110,40 +111,102 @@ export async function loadProducts(page = 1) {
 
 
 export function showNewProductForm() {
-    renderForm(handleFormSubmit);
+    renderForm();
 }
 
-export async function handleFormSubmit(event) {
-    event.preventDefault();
-    resetFormState();
+class ProductFormHandler {
+    constructor(formElement) {
+        this.formElement = formElement;
+        this.submitButton = this.formElement.querySelector('#submit-button');
+        this.formError = this.formElement.querySelector('#form-error');
+        this.formElement.addEventListener('submit', this.handleFormSubmit.bind(this));
+    }
 
-    const formData = new FormData(event.target);
+    async handleFormSubmit(event) {
+        event.preventDefault();
+        this.resetFormState();
 
-    if (validateForm(formData)) {
-        const result = await addProduct(formData);
-        if (result.success !== false) {
-            const submitButton = document.getElementById('submit-button');
-            submitButton.textContent = 'Success';
-            setTimeout(() => {
-                document.body.removeChild(document.getElementById('form-section'));
-            }, 2000);
-            loadProducts(currentPage);
-        } else {
-            const formError = document.getElementById('form-error');
-            formError.classList.remove('hidden');
+        const formData = new FormData(this.formElement);
+        const imageFile = formData.get('image');
+        let imageBase64 = null;
+
+        if (imageFile && imageFile.size > 0) {
+            imageBase64 = await this.getBase64(imageFile);
+        }
+
+        const productDTO = new ProductDTO(
+            formData.get('title'),
+            formData.get('description'),
+            formData.get('price'),
+            formData.get('category'),
+            null,
+            imageBase64
+        );
+
+        if (this.validateForm(productDTO)) {
+            const result = await addProduct(productDTO);
+            if (result && result.success !== false) {
+                this.submitButton.textContent = 'Success';
+                setTimeout(() => {
+                    document.body.removeChild(document.getElementById('form-section'));
+                }, 2000);
+                newProductButton.classList.remove('disabled');
+                loadProducts(currentPage);
+            } else {
+                this.formError.classList.remove('hidden');
+            }
         }
     }
-}
 
-function validateForm(formData) {
-    let valid = true;
-    for (let [key, value] of formData.entries()) {
-        const input = document.querySelector(`[name="${key}"]`);
-        if (!value) {
-            input.previousElementSibling.classList.add('error');
-            input.classList.add('shake');
+    validateForm(productDTO) {
+        let valid = true;
+
+        if (!productDTO.title) {
+            this.showValidationError('title');
             valid = false;
         }
+        if (!productDTO.description) {
+            this.showValidationError('description');
+            valid = false;
+        }
+        if (!productDTO.price) {
+            this.showValidationError('price');
+            valid = false;
+        }
+        if (!productDTO.category) {
+            this.showValidationError('category');
+            valid = false;
+        }
+
+        return valid;
     }
-    return valid;
+
+    showValidationError(fieldName) {
+        const input = this.formElement.querySelector(`[name="${fieldName}"]`);
+        input.previousElementSibling.classList.add('error');
+        input.classList.add('shake');
+    }
+
+    resetFormState() {
+        const inputs = this.formElement.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.classList.remove('shake');
+            input.previousElementSibling.classList.remove('error');
+        });
+        this.formError.classList.add('hidden');
+    }
+
+    getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+}
+
+export function initProductForm() {
+    const formElement = document.getElementById('new-product-form');
+    new ProductFormHandler(formElement);
 }
