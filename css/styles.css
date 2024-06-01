@@ -135,18 +135,20 @@ nav ul {
 
 nav ul li a {
     color: var(--secondary-color-1000);
+    font-size: x-large;
     text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.1s, color 0.1s, font-size 0.3s;
+    font-weight: lighter;
+    transition: background-color 0.1s, color 0.1s, font-size 0.3s, font-weight 0.4s ease-out;
 }
 
 nav ul li a:hover {
-    font-size: x-large;
+    font-size: xx-large;
+    font-weight: inherit;
     color: var(--text-color)
 }
 
 nav ul li a.active {
-    font-size: x-large;
+    font-size: xx-large;
     color: var(--text-color)
 }
 
@@ -681,7 +683,8 @@ footer {
     }
 
     nav ul.dropdown li a:hover {
-        color: var(--tertiary-color-1000);
+        color: var(--white-color-1000);
+        font-weight: lighter;
     }
 
     #new-product-form {
