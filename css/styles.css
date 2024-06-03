@@ -138,20 +138,20 @@ nav ul {
 
 nav ul li a {
     color: var(--secondary-color-1000);
-    font-size: x-large;
+    font-size: large;
     text-decoration: none;
     font-weight: lighter;
     transition: background-color 0.1s, color 0.1s, font-size 0.3s, font-weight 0.4s ease-out;
 }
 
 nav ul li a:hover {
-    font-size: xx-large;
+    font-size: x-large;
     font-weight: inherit;
     color: var(--text-color)
 }
 
 nav ul li a.active {
-    font-size: xx-large;
+    font-size: x-large;
     color: var(--text-color)
 }
 
@@ -378,13 +378,11 @@ main {
     z-index: 2;
 }
 
-
 .item-kebab-menu img {
     width: 20px;
     height: 20px;
     transition: filter 1s;
 }
-
 
 .item-kebab-menu img:hover {
     transform: none;
@@ -453,7 +451,6 @@ main {
     background-color: var(--primary-color-1000);
     color: var(--secondary-color-1000);
 }
-
 
 footer {
     background-color: var(--secondary-color-1000);
@@ -554,7 +551,6 @@ footer {
     }
 }
 
-
 .hidden {
     display: none;
 }
@@ -586,7 +582,19 @@ footer {
     align-items: end;
 }
 
+#new-product-form-right{
+    display: grid;
+}
+
+#form-group-bottom{
+    display: flex;
+    flex-direction: row;
+
+}
+
 .form-group {
+    display: grid;
+    flex-direction: row;
     padding-right: 3rem;
 }
 

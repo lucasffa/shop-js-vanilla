@@ -15,7 +15,7 @@ const DB_NAME = 'ProductCatalogDB';
 const DB_VERSION = 4;
 const STORE_NAME = 'products';
 const CATEGORY_STORE_NAME = 'categories';
-const TTL = 60 * 1000;
+const TTL = 30 * 1000;
 const TTL_CATEGORIES = 60 * 1000;
 
 function openDB() {

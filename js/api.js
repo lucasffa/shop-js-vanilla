@@ -109,7 +109,8 @@ export async function addProduct(productDTO) {
             };
 
             const saveProductLog = await saveProduct(product);
-            console.log('saveProductLog: ', saveProductLog)
+            console.log('saveProductLog: ', saveProductLog);
+            getProduct('prefetch');
             return product;
         } catch (jsonError) {
             console.error('Failed to parse response body as JSON:', jsonError);

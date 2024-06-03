@@ -88,7 +88,10 @@ export function renderProducts(products) {
         item.appendChild(img);
         item.appendChild(thisDiv);
         
+    if (IS_PREVIEW) {
         item.addEventListener('click', () => redirectToWhatsApp(product));
+    }
+
 
         catalogSection.appendChild(item);
     });
