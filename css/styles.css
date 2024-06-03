@@ -109,7 +109,10 @@ body {
 
 header {
     background-color: var(--primary-color-1000);
-    padding: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 10vw;
+    padding-right: 10vw;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -118,7 +121,6 @@ header {
 }
 
 header .logo {
-    padding-left: 1rem;
     width: 100px;
 }
 
@@ -417,6 +419,8 @@ main {
     transition: background-color 0.3s, color 0.3s;
     border-radius: 5px;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
 }
 
 #pagination button.first-page-button {
@@ -703,12 +707,19 @@ footer {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 950px) {
     header {
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
     }
+
+    
+#new-item {
+        padding-left:0.1rem;
+        padding-right: 0.1rem;
+    }
+
 
     #dropdown-menu {
         display: flex;
@@ -771,3 +782,10 @@ footer {
 
 }
 
+
+@media (max-width: 350px) {
+    header {
+        padding-left: 4vh;
+        padding-right: 4vh;
+    }
+}
