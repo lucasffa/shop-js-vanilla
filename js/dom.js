@@ -12,12 +12,16 @@
 // /js/dom.js
 
 import { getCategories } from "./api.js";
-import { initProductForm } from "./scripts.js";
+import { initProductForm, editProductItem, deleteProductItem, initEditProductForm, isValidWhatsAppNumber, generateSignature, redirectToWhatsApp } from "./scripts.js";
 
 export const newProductButton = document.getElementById('new-item');
 export const catalogSection = document.getElementById('catalog');
 export const paginationSection = document.getElementById('pagination');
 export const SECONDARY_COLOR_1000 = '#181A2D';
+export let SHOP_WHATSAPP = '5533999707070';
+export const SECRET_KEY = 'your-secret-key';
+
+
 
 export function resetFormState() {
     document.querySelectorAll('.error').forEach(label => label.classList.remove('error'));
@@ -27,6 +31,7 @@ export function resetFormState() {
     const submitButton = document.getElementById('submit-button');
     submitButton.textContent = 'Register';
 }
+
 
 export function renderProducts(products) {
     catalogSection.innerHTML = '';
@@ -39,27 +44,33 @@ export function renderProducts(products) {
         img.src = product.image;
         img.alt = product.title;
 
-        const kebabMenu = document.createElement('div');
-        kebabMenu.className = 'item-kebab-menu';
-        kebabMenu.innerHTML = '<img src="img/kebab.svg" alt="Kebab Menu">';
 
-        const kebabOptions = document.createElement('div');
-        kebabOptions.className = 'item-kebab-options';
+        if (!IS_PREVIEW) {
+            const kebabMenu = document.createElement('div');
+            kebabMenu.className = 'item-kebab-menu';
+            kebabMenu.innerHTML = '<img src="img/kebab.svg" alt="Kebab Menu">';
 
-        const editButton = document.createElement('button');
-        editButton.className = 'edit';
-        editButton.setAttribute('aria-label', 'Edit');
-        editButton.innerHTML = `<img src="img/edit.svg" alt="Edit">`;
-        // editButton.addEventListener('click', () => editProductItem(product.id)); // Define editProductItem function in scripts.js
+            const kebabOptions = document.createElement('div');
+            kebabOptions.className = 'item-kebab-options';
 
-        const deleteButton = document.createElement('button');
-        deleteButton.className = 'delete';
-        deleteButton.setAttribute('aria-label', 'Delete');
-        deleteButton.innerHTML = `<img src="img/delete.svg" alt="Delete">`;
-        // deleteButton.addEventListener('click', () => deleteProductItem(product.id)); // Define deleteProductItem function in scripts.js
+            const editButton = document.createElement('button');
+            editButton.className = 'edit';
+            editButton.setAttribute('aria-label', 'Edit');
+            editButton.innerHTML = `<img src="img/edit.svg" alt="Edit">`;
+            editButton.addEventListener('click', () => editProductItem(product));
 
-        kebabOptions.appendChild(editButton);
-        kebabOptions.appendChild(deleteButton);
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete';
+            deleteButton.setAttribute('aria-label', 'Delete');
+            deleteButton.innerHTML = `<img src="img/delete.svg" alt="Delete">`;
+            deleteButton.addEventListener('click', () => deleteProductItem(product.id));
+
+            kebabOptions.appendChild(editButton);
+            kebabOptions.appendChild(deleteButton);
+
+            item.appendChild(kebabMenu);
+            item.appendChild(kebabOptions);
+        }
 
         const name = document.createElement('p');
         name.className = 'label';
@@ -75,9 +86,9 @@ export function renderProducts(products) {
         thisDiv.appendChild(price);
 
         item.appendChild(img);
-        item.appendChild(kebabMenu);
-        item.appendChild(kebabOptions);
         item.appendChild(thisDiv);
+        
+        item.addEventListener('click', () => redirectToWhatsApp(product));
 
         catalogSection.appendChild(item);
     });
@@ -210,6 +221,79 @@ export async function renderForm() {
     });
 }
 
+export async function renderEditForm(product) {
+    // Pre-fetching
+    console.log('Fetching initial categories to store in IndexedDB');
+    await getCategories('all');
+
+    const formSection = document.createElement('section');
+    formSection.id = 'form-section';
+
+    const response = await fetch('/components/new_product_form.html');
+    const htmlContent = await response.text();
+
+    formSection.innerHTML = htmlContent;
+
+    document.body.appendChild(formSection);
+
+    const newProductForm = document.getElementById('new-product-form');
+
+    const categoryEditSelect = document.getElementById('product-category');
+    const categories = await getCategories();
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        categoryEditSelect.appendChild(option);
+    });
+
+    const titleInput = newProductForm.querySelector('#product-name');
+    const descriptionInput = newProductForm.querySelector('#product-description');
+    const priceInput = newProductForm.querySelector('#product-price');
+    const categorySelect = newProductForm.querySelector('#product-category');
+    const imageInput = newProductForm.querySelector('#product-image');
+    const imagePreview = newProductForm.querySelector('#image-preview');
+
+    titleInput.value = product.title;
+    descriptionInput.value = product.description;
+    priceInput.value = product.price;
+    categorySelect.value = product.category;
+    imagePreview.style.backgroundImage = `url(${product.image})`;
+    imageInput.removeAttribute('required');
+
+    const editedFields = {};
+
+    titleInput.addEventListener('change', () => editedFields.title = titleInput.value);
+    descriptionInput.addEventListener('change', () => editedFields.description = descriptionInput.value);
+    priceInput.addEventListener('change', () => editedFields.price = priceInput.value);
+    categorySelect.addEventListener('change', () => editedFields.category = categorySelect.value);
+
+    function handleClickOutside(event) {
+        try {
+            if (!newProductForm.contains(event.target)) {
+                document.body.removeChild(formSection);
+                newProductButton.classList.remove('disabled');
+                document.removeEventListener('click', handleClickOutside);
+            }
+        } catch (e) {
+            // No handle error
+        }
+    }
+
+    document.addEventListener('click', handleClickOutside);
+
+    const closeFormButton = document.getElementById('close-form');
+    closeFormButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        document.body.removeChild(formSection);
+        newProductButton.classList.remove('disabled');
+        document.removeEventListener('click', handleClickOutside);
+    });
+
+
+    initEditProductForm(product.id, editedFields);
+}
 
 export async function disableTouchFor(x) {
     const overlay = document.createElement('div');

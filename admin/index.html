@@ -13,8 +13,8 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Shopfly">
     <meta property="og:description" content="Discover the best products at Shopfly">
-    <meta property="og:image" content="https://shop-js-vanilla.vercel.app/img/favicon.svg">
-    <meta property="og:url" content="https://shop-js-vanilla.vercel.app/">
+    <meta property="og:image" content="../img/favicon.svg">
+    <meta property="og:url" content="https://shop-js-vanilla.vercel.app/admin/index.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Shopfly">
     
@@ -22,21 +22,21 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Shopfly">
     <meta name="twitter:description" content="Discover the best products at Shopfly">
-    <meta name="twitter:image" content="https://shop-js-vanilla.vercel.app/img/favicon.svg">
+    <meta name="twitter:image" content="../img/favicon.svg">
 
     <!-- General SEO Tags -->
     <meta name="robots" content="index, follow">
     <meta name="author" content="Lucas de Almeida">
     <meta name="keywords" content="Shopfly, shopping, ecommerce, products, categories, best products, online shopping">
-    <link rel="canonical" href="https://shop-js-vanilla.vercel.app/">
+    <link rel="canonical" href="https://shop-js-vanilla.vercel.app/admin/index.html">
 
     <!-- Favicons -->
-    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.svg">
-    <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.svg">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon.svg">
+    <link rel="icon" type="image/png" sizes="64x64" href="../img/favicon.svg">
 
     <!-- CSS and other Stylesheets -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -47,7 +47,7 @@
 
 <body>
     <header>
-        <img src="img/logo.svg" alt="Logo" class="logo">
+        <img src="../img/logo.svg" alt="Logo" class="logo">
         <a href="#" id="dropdown-menu">Categories</a>
         <nav>
             <ul>
@@ -55,6 +55,8 @@
             </ul>
         </nav>
 
+        <a id="settings-button" style="display: none;"><img src="../img/settings.svg" alt="Settings" class="settings-icon"></a>
+        <a href="#" id="new-item">New Item</a>
 
     </header>
 
@@ -62,7 +64,16 @@
     <main>
 
         <section class="banner">
-            <img src="img/banner.svg" alt="Banner" id="banner-image">
+            <img src="../img/banner.svg" alt="Banner" id="banner-image">
+            <div class="kebab-menu" aria-label="Kebab Menu">
+                <img src="../img/kebab.svg" alt="Kebab Menu">
+                <div class="kebab-options">
+                    <button aria-label="Edit" class="edit"><img src="../img/edit.svg" alt="Edit"></button>
+                    <button aria-label="Delete" class="delete"><img src="../img/delete.svg" alt="Delete"></button>
+                    <button aria-label="Close Kebab Menu" class="close-kebab"><img src="../img/reload.svg"
+                            alt="Close"></button>
+                </div>
+            </div>
         </section>
 
         <section id="catalog">
@@ -76,7 +87,7 @@
 
     
     <footer>
-        <img src="img/logo-white.svg" alt="Logo" class="footer-logo">
+        <img src="../img/logo-white.svg" alt="Logo" class="footer-logo">
         
         <div class="company-info">
             <p>Shopfly Comércio LTDA</p>
@@ -86,28 +97,28 @@
         </div>
         
         <div class="payment-methods">
-            <img src="img/visa.svg" alt="Visa">
-            <img src="img/mastercard.svg" alt="MasterCard">
-            <img src="img/paypal.svg" alt="PayPal">
+            <img src="../img/visa.svg" alt="Visa">
+            <img src="../img/mastercard.svg" alt="MasterCard">
+            <img src="../img/paypal.svg" alt="PayPal">
         </div>
         
         <div class="social-icons">
-            <img src="img/instagram.svg" alt="Instagram">
-            <img src="img/facebook.svg" alt="Facebook">
-            <img src="img/tiktok.svg" alt="Tiktok">
-            <img src="img/youtube.svg" alt="Youtube">
+            <img src="../img/instagram.svg" alt="Instagram">
+            <img src="../img/facebook.svg" alt="Facebook">
+            <img src="../img/tiktok.svg" alt="Tiktok">
+            <img src="../img/youtube.svg" alt="Youtube">
         </div>
     </footer>
 
     <script>
-        const IS_PREVIEW = true;
+        const IS_PREVIEW = false;
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script type="module" src="js/db.js"></script>
-    <script type="module" src="js/scripts.js"></script>
-    <script type="module" src="js/events.js"></script>
-    <script type="module" src="js/dom.js"></script>
-    <script type="module" src="js/pagination.js"></script>
+    <script type="module" src="../js/db.js"></script>
+    <script type="module" src="../js/scripts.js"></script>
+    <script type="module" src="../js/events.js"></script>
+    <script type="module" src="../js/dom.js"></script>
+    <script type="module" src="../js/pagination.js"></script>
 </body>
 
 </html>

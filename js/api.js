@@ -11,13 +11,13 @@
 
 // api.js
 
-import { saveProduct, getProduct, clearExpiredProducts, saveCategory, getCategoriesFromDB, clearExpiredCategories, getAllProducts } from './db.js';
+import { saveProduct, getProduct, clearExpiredProducts, saveCategory, getCategoriesFromDB, clearExpiredCategories, getAllProducts, deleteProductFromDB, editProductFromDB } from './db.js';
 import { ProductDTO } from './dto.js';
 
 const BASEURL = 'https://fakestoreapi.com';
 
-export async function getCategories() {
-    await clearExpiredCategories();
+export async function getCategories(category = '') {
+    await clearExpiredCategories(category);
     let categories = await getCategoriesFromDB();
     if (!categories) {
         try {
@@ -39,7 +39,7 @@ export async function getProducts(category) {
     console.log('Executando db.clearExpiredProducts em api.getProducts');
     await clearExpiredProducts();
     console.log('Executando db.getAllProducts em api.getProducts');
-    let products = await getAllProducts();
+    let products = (category == 'prefetch') ? 0 : await getAllProducts();
     if (!products.length) {
         try {
             console.log('Fetching products from API');
@@ -122,6 +122,7 @@ export async function addProduct(productDTO) {
 }
 
 export async function deleteProduct(id) {
+    console.log('Deleting product id: ', id)
     try {
         const response = await fetch(`${BASEURL}/products/${id}`, {
             method: 'DELETE',
@@ -129,7 +130,7 @@ export async function deleteProduct(id) {
         if (!response.ok) {
             throw new Error('Failed to delete product');
         }
-        await deleteProduct(id);
+        await deleteProductFromDB(id);
         return await response.json();
     } catch (error) {
         console.error(error);
@@ -137,11 +138,22 @@ export async function deleteProduct(id) {
     }
 }
 
-export async function editProduct(id, data) {
+
+export async function editProduct(id, productEditDTO) {
+    console.log('In api.editProduct, logging id: ', id)
+    const updatedFields = {};
+    for (const key in productEditDTO) {
+        if (productEditDTO[key] !== null && productEditDTO[key] !== undefined) {
+            console.log('In api.editProduct, loggin productEditDTO[key], for [key] = ', key ,' : ', productEditDTO[key])
+            updatedFields[key] = productEditDTO[key];
+        }
+    }
+    console.log('In api.editProduct, logging updatedFields', updatedFields)
+
     try {
         const response = await fetch(`${BASEURL}/products/${id}`, {
             method: 'PUT',
-            body: JSON.stringify(data),
+            body: JSON.stringify(updatedFields),
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -150,7 +162,7 @@ export async function editProduct(id, data) {
             throw new Error('Failed to edit product');
         }
         const updatedProduct = await response.json();
-        await saveProduct({ id: updatedProduct.id, ...updatedProduct, timestamp: Date.now() });
+        await editProductFromDB(id, updatedFields);
         return updatedProduct;
     } catch (error) {
         console.error(error);

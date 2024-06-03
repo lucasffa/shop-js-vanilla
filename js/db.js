@@ -12,10 +12,10 @@
 // /js/db.js
 
 const DB_NAME = 'ProductCatalogDB';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 const STORE_NAME = 'products';
 const CATEGORY_STORE_NAME = 'categories';
-const TTL = 180 * 1000;
+const TTL = 60 * 1000;
 const TTL_CATEGORIES = 60 * 1000;
 
 function openDB() {
@@ -66,6 +66,40 @@ export async function saveProduct(product) {
 }
 
 
+export async function editProductFromDB(id, updatedFields) {
+    try {
+        const db = await openDB();
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+
+        return new Promise((resolve, reject) => {
+            const getRequest = store.get(id);
+            getRequest.onsuccess = () => {
+                const existingProduct = getRequest.result;
+                if (existingProduct) {
+                    const updatedProduct = { ...existingProduct, ...updatedFields, timestamp: Date.now() };
+                    console.log('In db.editProductFromDB, logging updatedProduct before store.put(updatedProduct): ', updatedProduct);
+                    const putRequest = store.put(updatedProduct);
+                    putRequest.onsuccess = () => {
+                        resolve(updatedProduct);
+                    };
+                    putRequest.onerror = (event) => {
+                        reject('IndexedDB error: ' + event.target.errorCode);
+                    };
+                } else {
+                    reject('Product not found');
+                }
+            };
+            getRequest.onerror = (event) => {
+                reject('IndexedDB error: ' + event.target.errorCode);
+            };
+        });
+    } catch (error) {
+        console.error('Error editing product:', error);
+    }
+}
+
+
 export async function getProduct(id) {
     const store = await getTransaction(STORE_NAME, 'readonly');
     return new Promise((resolve, reject) => {
@@ -94,7 +128,7 @@ export async function getAllProducts() {
     });
 }
 
-export async function deleteProduct(id) {
+export async function deleteProductFromDB(id) {
     const store = await getTransaction(STORE_NAME, 'readwrite');
     store.delete(id);
 }
@@ -106,6 +140,7 @@ export async function clearExpiredProducts(category) {
         const cursor = request.result;
         if (cursor) {
             const product = cursor.value;
+            console.log('In db.clearExpiredProducts, logging product from cursor.value: ', product)
             if (category == 'prefetch' || ((Date.now() - product.timestamp) >= TTL)) {
                 console.log('Deleting this product: ', product)
                 store.delete(cursor.key);
@@ -137,14 +172,14 @@ export async function getCategoriesFromDB() {
     });
 }
 
-export async function clearExpiredCategories() {
+export async function clearExpiredCategories(category = '') {
     const store = await getTransaction(CATEGORY_STORE_NAME, 'readwrite');
     const request = store.openCursor();
     request.onsuccess = () => {
         const cursor = request.result;
         if (cursor) {
             const category = cursor.value;
-            if ((Date.now() - category.timestamp) >= TTL_CATEGORIES) {
+            if ((Date.now() - category.timestamp) >= TTL_CATEGORIES || category == 'prefetch') {
                 store.delete(cursor.key);
             }
             cursor.continue();

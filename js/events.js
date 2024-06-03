@@ -11,9 +11,13 @@
 
 // /js/events.js
 
-import { showNewProductForm, loadProducts, loadCategories, delay } from './scripts.js';
-import { newProductButton } from './dom.js';
+import { showNewProductForm, loadProducts, loadCategories, delay, openWhatsAppNumberDialog } from './scripts.js';
+import { newProductButton, SHOP_WHATSAPP } from './dom.js';
 import { getCategories, getProducts } from './api.js';
+
+if (!IS_PREVIEW) {
+    document.getElementById('settings-button').addEventListener('click', openWhatsAppNumberDialog);
+}
 
 newProductButton?.addEventListener('click', (event) => {
     event.stopPropagation();
